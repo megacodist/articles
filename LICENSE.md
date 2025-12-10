@@ -22,8 +22,3 @@ Under the following terms:
 ---
 
 Copyright (c) 2025 Megacodist
-
-
-
-
-I'm going to make a static website from this repository. So, I want to replace, somehow, the "This work" in a way that it refers to the repository and its live version as `https://megacodist.com/tutorials`
