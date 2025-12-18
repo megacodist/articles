@@ -5,6 +5,33 @@ title: README
 
 A collection of practical, no-fluff tutorials for IT and software development.
 
+## Tech Stack Requirements
+
+To ensure maximum stability, reproducibility, and performance, this project is carefully tuned to run on a modern, battle‑tested stack. Each component has been chosen to guarantee smooth developer experience and long‑term maintainability.
+
+**Concise:**  
+Node.js v24.11.1 + React v19.2.0 + Next.js v16.0.4 + pnpm v10.23.0 + Tailwind v4.1 + daisyUI v5.5.8
+
+**Detailed:**
+
+*   **Runtime:** Node.js `v24.11.1`  
+    Provides a fast, reliable JavaScript runtime with cutting‑edge features and security updates.
+
+*   **Package Manager:** pnpm `v10.23.0`  
+    A blazing‑fast, disk‑space‑efficient package manager that ensures consistent installs across environments.
+
+*   **UI Library:** React `v19.2.0`  
+    The core library for building highly interactive, component‑driven user interfaces with the latest concurrent features.
+
+*   **Framework:** Next.js `v16.0.4`  
+    The powerful React framework for building scalable, production‑ready applications with ease.
+
+*   **Styling Engine:** Tailwind CSS `v4.1`  
+    A modern, utility‑first CSS engine designed for rapid styling, high performance, and minimal bundle sizes.
+
+*   **Component Kit:** daisyUI `v5.5.8`  
+    A comprehensive component library that extends Tailwind CSS to provide semantic class names and faster UI development.
+
 ## Philosophy
 
 This repository is a collection of technical guides I wish I had when I was learning. Most online tutorials are bloated with unnecessary backstory, affiliate links, and simplistic examples that don't work in the real world.

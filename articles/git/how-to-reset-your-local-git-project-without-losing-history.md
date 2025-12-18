@@ -1,5 +1,7 @@
 ---
 title: How to Reset Your Local Git Project Without Losing History
+created_on: 2025-11-20T20:21:51+03:30
+author: Megacodist
 ---
 
 # How to Reset Your Local Git Project Without Losing History

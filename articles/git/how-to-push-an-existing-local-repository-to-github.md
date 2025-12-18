@@ -1,5 +1,6 @@
 ---
 title: How to Push an Existing Local Repository to GitHub
+created_on: 2025-11-20T10:38:20+03:30
 author: Megacodist
 ---
 # How to Push an Existing Local Repository to GitHub

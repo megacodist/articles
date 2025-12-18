@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+ @plugin "daisyui" {
+   themes: light --default, dark --prefersdark;
+ }
+
+
+@theme {
+  /* Size utilities... */
+  --size-m3-3xs: 0.125rem; /* 2px */
+  --size-m3-2xs: 0.25rem; /* 4px */
+  --size-m3-xs: 0.5rem;  /* 8px */
+  --size-m3-s: 0.75rem; /* 12px */
+  --size-m3-m: 1rem;   /* 16px */
+  --size-m3-l: 1.25rem; /* 20px */
+  --size-m3-xl: 1.5rem;  /* 24px */
+  --size-m3-2xl: 2rem;    /* 32px */
+  --size-m3-3xl: 2.5rem; /* 40px */
+}
+
+
+@layer base {
+  body {
+    @apply transition-colors duration-500;
+  }
+}
+
+
+/* Tailwind Components layer */
+@layer components {
+  .m3-container {
+    @apply container mx-auto px-4 py-12 max-w-3xl;
+  }
+
+  /* Megacodist icon sizes */
+  .m3-icon-m {
+    @apply w-(--size-m3-m) h-(--size-m3-m);
+  }
+  .m3-icon-l {
+    @apply w-(--size-m3-l) h-(--size-m3-l);
+  }
+  .m3-icon-xl {
+    @apply w-(--size-m3-xl) h-(--size-m3-xl);
+  }
+  .m3-icon-2xl {
+    @apply w-(--size-m3-2xl) h-(--size-m3-2xl);
+  }
+  .m3-icon-3xl {
+    @apply w-(--size-m3-3xl) h-(--size-m3-3xl);
+  }
+
+  .m3-icon-btn {
+    @apply rounded-full p-2 transition-colors duration-150;
+    @apply focus:ring-2 focus:ring-offset-2 focus:ring-base-content;
+  }
+}

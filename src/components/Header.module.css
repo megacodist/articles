@@ -1,0 +1,27 @@
+@reference '../app/globals.css';
+
+
+.header {
+  @apply flex items-center justify-between
+    h-(--size-m3-3xl)
+    bg-base-300
+    border-b
+    px-4
+    sticky top-0 z-50;
+}
+
+.headerPlaceholder {
+  @apply h-(--size-m3-3xl)
+    border-b
+    px-4;
+}
+
+.headerGroup {
+  @apply flex items-center
+    gap-4;
+}
+
+.headerIcon {
+    @apply h-(--size-m3-xl) w-(--size-m3-xl);
+}
+

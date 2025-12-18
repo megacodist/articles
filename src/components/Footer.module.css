@@ -1,0 +1,23 @@
+@reference '../app/globals.css';
+
+.footer {
+  @apply py-6 border-t bg-base-300;
+}
+
+.ftrContainer {
+  @apply container
+    flex flex-col-reverse md:flex-row items-center justify-between
+    mx-auto px-4 gap-4;
+}
+
+.copyright {
+  @apply text-sm;
+}
+
+.socialIcons {
+  @apply flex items-center gap-6;
+}
+
+.ftrIcon {
+  @apply w-(--size-m3-xl) h-(--size-m3-xl);
+}

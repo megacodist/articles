@@ -1,5 +1,7 @@
 ---
 title: Initialize a Next.js App
+created_on: 2025-11-27T20:16:52+03:30
+author: Megacodist
 ---
 
 # Initialize a Next.js App

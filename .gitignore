@@ -1,0 +1,45 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Ignoring dependencies...
+node_modules/
+
+# Ignoring the NPM lockfile in a Yarn-managed project...
+package-lock.json
+
+# Ignoring PNPM debug logs...
+.pnpm-debug.log*
+
+# Ignoring tools files & folders...
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+.qodo/
+coverage/
+.cache/
+
+# Ignoring Next.js files & folders...
+/.next
+/out
+*.tsbuildinfo
+/next-env.d.ts
+
+# Ignoring production
+build/
+
+# Ignoring OS-specific files...
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Ignoring security assets...
+*.pem
+
+# Ignoring debug (log) files & folders...
+log/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Ignoring Vercel deployment state...
+.vercel/
