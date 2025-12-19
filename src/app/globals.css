@@ -21,7 +21,10 @@
 
 @layer base {
   body {
-    @apply transition-colors duration-500;
+    @apply flex flex-col  /* Stacks elements vertically */
+      min-h-screen /* Forces body to be at least as tall as the browser window */
+      antialiased /* Enforces to use grayscale antialiasing instead of macOS/iOS subpixel rendering */
+      transition-colors duration-500; /* Smoothly transition colors during theme switch  */
   }
 }
 
@@ -29,7 +32,7 @@
 /* Tailwind Components layer */
 @layer components {
   .m3-container {
-    @apply container mx-auto px-4 py-12 max-w-3xl;
+    @apply container px-4 py-2;
   }
 
   /* Megacodist icon sizes */

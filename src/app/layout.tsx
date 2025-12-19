@@ -20,12 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning >
-      {/*
-        flex-col: Stacks elements vertically
-        min-h-screen: Forces body to be at least as tall as the browser window
-      */}
-      <body className="flex flex-col min-h-screen antialiased">
-        <DocsSidebar />
+      <body>
         <ThemeProvider>
           <Header/>
 
@@ -33,8 +28,15 @@ export default function RootLayout({
             flex-grow: This tells the main content to take up ALL available
             space, pushing the footer to the bottom.
           */}
-          <main className="m3-container flex-grow">
-            {children}
+          <main className="m3-container flex flex-grow">
+            <div className="flex-none">
+              <DocsSidebar />
+            </div>
+            
+            {/* Content: Takes up all remaining space */}
+            <div className="grow p-6">
+              {children}
+            </div>
           </main>
           
           <Footer />
