@@ -72,17 +72,23 @@ export function DocsSidebar() {
     [pathname]
   );
 
-  // Auto-expand parents of active node
+  /** 
+   * The IDs of the parent nodes of the current article to be expanded
+   * by default
+   */
   const defaultExpandedIds = useMemo(() => {
     if (!activeId) return new Set<string>();
     const parentIds = findParentIds(docsNavigation, activeId);
     return new Set(parentIds ?? []);
   }, [activeId]);
 
-  // Handle activation (could add analytics, etc.)
-  const handleActivate: OnNodeActivate<string> = useCallback((node) => {
-    console.log("Activated:", node.name);
-  }, []);
+  /** Activation handler (could add analytics, etc.) */
+  const handleActivate: OnNodeActivate<string> = useCallback(
+    (node) => {
+      console.log("Activated:", node.name);
+    },
+    []  // Create this memoized function once and reuse the same function reference on every render.
+  );
 
   return (
     <aside className="min-h-full border-r flex flex-col">

@@ -43,3 +43,6 @@ yarn-error.log*
 
 # Ignoring Vercel deployment state...
 .vercel/
+
+# Ignoring temporary files & folders...
+src/app/test/

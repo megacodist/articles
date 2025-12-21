@@ -10,7 +10,7 @@ export type {
   RenderNode,
   OnNodeToggle,
   OnNodeActivate,
-} from "./types";
+} from "@/types/m3a-sidebar";
 
 // Components
 export { Sidebar } from "./Sidebar";
