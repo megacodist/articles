@@ -501,14 +501,14 @@ export function Dashboard() {
     [allItems, filter]
   );
 
-  const handleChange = useCallback(
+  const onFilterChanged = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setFilter(e.target.value),
     []
   );
 
   return (
     <div>
-      <input value={filter} onChange={handleChange} />
+      <input value={filter} onChange={onFilterChanged} />
       <ItemsList items={filteredItems} />
     </div>
   );
@@ -518,6 +518,8 @@ export function Dashboard() {
 ### After: Let the Compiler Optimize
 
 ```tsx
+"use client";
+
 import { useState } from "react";
 
 function ItemsList({ items }: { items: string[] }) {
@@ -534,13 +536,13 @@ export function Dashboard() {
 
   const filteredItems = allItems.filter((item) => item.includes(filter));
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFilterChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value);
   };
 
   return (
     <div>
-      <input value={filter} onChange={handleChange} />
+      <input value={filter} onChange={onFilterChanged} />
       <ItemsList items={filteredItems} />
     </div>
   );
@@ -590,3 +592,19 @@ When dependencies involve multiple interconnected values, manual control over th
 2. New references trigger unnecessary work: recalculations, child re-renders, and effect executions.
 3. `useMemo`, `useCallback`, and `memo` let you preserve references across renders.
 4. React 19's compiler automates these optimizations, but understanding the fundamentals remains important for debugging and edge cases.
+
+## Bibliography
+
+1. **Silva-Vergara, Rafael.** "Goodbye memo, useMemo & useCallback in React 19?" was published in _JavaScript in Plain English_ on October 27, 2024. This source discusses how the **React 19 compiler** aims to handle **auto-memoization**, potentially reducing the need for manual performance hooks.
+2. **Mudafar E.** "Goodbye useCallback?. How React 19 (and React Compiler) Simplifies Stable References" was published on _Medium_ on September 26, 2025. This article uses real-world examples to demonstrate how the **React Compiler** manages **stable function references** to prevent unnecessary re-renders in child components.
+3. **"Mastering React Memoization and Stable Function References"** provides a conceptual overview of **memoization** as a caching technique and explains the **identity problem** where functions are recreated on every render.
+4. **r/reactjs (Reddit).** "React 19 - The React compiler now handles re-renders automatically... Is this a good decision?" is a community thread where developers debate the trade-offs between **explicit code** and the "magic" of automatic compiler optimizations.
+5. **Joodi.** "React 19 Memoization: Is useMemo & useCallback No Longer Necessary?" was published on the _DEV Community_ on March 30 and edited on April 16. It details how the **React Compiler** optimizes calculations and **stabilizes function references** without developer intervention.
+6. **TkDodo.** "Ref Callbacks, React 19 and the Compiler" was published on _TkDodo's blog_ on December 8, 2024. This source explores the evolution of **ref callbacks**, their new cleanup function capabilities in React 19, and the implications of using `useCallback` for stable references.
+7. **React Documentation.** "useCallback – React" is the official v19.2 API reference, which defines `useCallback` as a hook to **cache function definitions** between re-renders to skip re-rendering child components wrapped in `memo`.
+8. **React Documentation.** "useMemo – React" is the official v19.2 API reference, explaining how `useMemo` **caches calculation results** to avoid expensive work during updates.
+
+## AI Assistances
+
+1. Google NotebookLM
+2. Anthropic Claude Opus 4.5

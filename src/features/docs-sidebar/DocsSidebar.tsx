@@ -1,6 +1,6 @@
 // src/features/docs-sidebar/DocsSidebar.tsx
 
-// Mark the component to run in the browser not in the server
+// Mark the component as client to run in the browser not in the server
 "use client";
 
 import { usePathname } from "next/navigation";
@@ -34,7 +34,7 @@ function findActiveNode(
 }
 
 /**
- * Finds all parent branch IDs for a given node.
+ * Recursively finds all parent branch IDs for a given node.
  * 
  * @param nodes	Current level of the sidebar to search
  * @param targetId	The node ID we're looking for
@@ -76,14 +76,17 @@ export function DocsSidebar() {
    * The IDs of the parent nodes of the current article to be expanded
    * by default
    */
-  const defaultExpandedIds = useMemo(() => {
-    if (!activeId) return new Set<string>();
-    const parentIds = findParentIds(docsNavigation, activeId);
-    return new Set(parentIds ?? []);
-  }, [activeId]);
+  const defaultExpandedIds = useMemo(
+    () => {
+      if (!activeId) return new Set<string>();
+      const parentIds = findParentIds(docsNavigation, activeId);
+      return new Set(parentIds ?? []);
+    },
+    [activeId]
+  );
 
-  /** Activation handler (could add analytics, etc.) */
-  const handleActivate: OnNodeActivate<string> = useCallback(
+  /** The stable function reference for the activation handler */
+  const onNodeActivation: OnNodeActivate<string> = useCallback(
     (node) => {
       console.log("Activated:", node.name);
     },
@@ -106,7 +109,7 @@ export function DocsSidebar() {
           data={docsNavigation}
           activeId={activeId}
           defaultExpandedIds={defaultExpandedIds}
-          onActivate={handleActivate}
+          onActivate={onNodeActivation}
           renderNode={DocsNodeRenderer}
           indentSize={20}
           aria-label="Documentation navigation"

@@ -1,5 +1,7 @@
 // src/lib/sidebar/context.ts
 
+// Marks as Client Component,	`createContext` and `useContext` require
+// client-side React
 "use client";
 
 import { createContext, useContext } from "react";

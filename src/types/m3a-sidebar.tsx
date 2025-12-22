@@ -6,6 +6,10 @@ import type { ReactNode } from "react";
 // Node Types
 // ===========================================================================
 
+/**
+ * This base type doesn't use `ContentType` directly, but extending types
+ * will. This ensures type consistency across the hierarchy
+ */
 interface BaseNode<ContentType> {
   /** Unique identifier for the node. */
   id: string;
@@ -13,7 +17,7 @@ interface BaseNode<ContentType> {
   /** Human-readable display label. */
   name: string;
   
-  /** Optional icon (emoji, SVG, component). */
+  /** The visual indicator (emoji, SVG, component). */
   icon?: ReactNode;
   
   /** When `true`, the node is non-interactive. */
@@ -21,13 +25,15 @@ interface BaseNode<ContentType> {
 }
 
 /**
- * A branch node that can contain children.
+ * A branch node in the sidebar that can contain children. If caller
+ * doesn't specify the generic type, it defaults to `unknown`, which is
+ * safer than `any`.
  */
 export type BranchNode<ContentType = unknown> = BaseNode<ContentType> & {
-  /** Distinguishes this as a branch node. */
+  /** Discriminant for type narrowing. Distinguishes this as a branch node. */
   type: "branch";
 
-  /** Child nodes. */
+  /** Nested nodes, can be empty. */
   children: SidebarNode<ContentType>[];
 
   /** Optional payload data. */
@@ -38,15 +44,30 @@ export type BranchNode<ContentType = unknown> = BaseNode<ContentType> & {
  * A terminal leaf node in the sidebar.
  */
 export type LeafNode<ContentType = unknown> = BaseNode<ContentType> & {
-  /** Distinguishes this as a leaf node. */
+  /** Discriminant for type narrowing. Distinguishes this as a leaf node. */
   type: "leaf";
 
-  /** Optional payload data. */
+  /** Required payload data. */
   content: ContentType;
 };
 
 /**
  * Discriminated union of all node types.
+ * 
+ * @example
+ *function process(node: SidebarNode<string>) {
+ *  // TypeScript doesn't know which type yet
+ *  node.content  // Error: might be undefined (branch)
+ *
+ *  if (node.type === "branch") {
+ *    // TypeScript now knows: node is BranchNode<string>
+ *    node.children  // ✓ Valid
+ *    node.content   // string | undefined
+ *  } else {
+ *    // TypeScript now knows: node is LeafNode<string>
+ *    node.content   // ✓ string (required)
+ *  }
+ * }
  */
 export type SidebarNode<ContentType = unknown> =
   | BranchNode<ContentType>
@@ -60,6 +81,9 @@ export type SidebarNode<ContentType = unknown> =
  * When you provide a custom render function, you need information about
  * the current node's state. This interface packages everything a
  * renderer needs into a single object.
+ * 
+ * * `isFirst` and `isLast` are especially useful for styling first/last
+ * child nodes differently (e.g., rounded corners).
  */
 export interface NodeRenderContext<ContentType = unknown> {
   /** The node data being rendered. */
@@ -118,14 +142,45 @@ export interface NodeRenderContext<ContentType = unknown> {
  * @param node 	The node being toggled
  * @param isExpanded The new state after toggling. `true` = now expanded,
  * `false` = now collapsed.
+ * 
+ * @example
+ * const handleToggle: OnNodeToggle<string> = (node, isExpanded) => {
+ *   // Lazy load children
+ *  if (isExpanded && !node.children.length) {
+ *    fetchChildren(node.id);
+ *  }
+ *  
+ *  // Persist to localStorage
+ *  saveExpandedState(node.id, isExpanded);
+ *
+ *  // Analytics
+ *  analytics.track("sidebar_toggle", { nodeId: node.id, expanded: isExpanded });
  */
 export type OnNodeToggle<ContentType = unknown> = (
+  /** The node being toggled */
   node: BranchNode<ContentType>,
+
+  /**
+   * The new state after toggling. `true` = now expanded, `false` = now
+   * collapsed.
+   */
   isExpanded: boolean
 ) => void;
 
 /**
  * Callback invoked when user activates a node.
+ * 
+ * @example
+ * const handleActivate: OnNodeActivate<string> = (node) => {
+ *   // Close mobile menu
+ *   setMobileOpen(false);
+ *  
+ *   // Update breadcrumbs
+ *   setBreadcrumbs(buildBreadcrumbs(node));
+ *  
+ *   // Scroll content to top
+ *   window.scrollTo(0, 0);
+ * };
  */
 export type OnNodeActivate<ContentType = unknown> = (
   node: SidebarNode<ContentType>
@@ -135,6 +190,20 @@ export type OnNodeActivate<ContentType = unknown> = (
 // Render Prop
 // ===========================================================================
 
+/**
+ * @example
+ * // Consumer provides custom rendering logic
+ * <Sidebar
+ *   data={nodes}
+ *   renderNode={(context) => (
+ *     <MyCustomNode
+ *       label={context.node.name}
+ *       active={context.isActive}
+ *       onClick={context.activate}
+ *     />
+ *   )}
+ * />
+ */
 export type RenderNode<ContentType = unknown> = (
   context: NodeRenderContext<ContentType>
 ) => ReactNode;
@@ -146,6 +215,18 @@ export type RenderNode<ContentType = unknown> = (
 /** 
  * Defines all props the Treeview component accepts. This is the contract
  * between the component and its consumers.
+ * 
+ * @example <caption>Controlled vs. Uncontrolled</caption>
+ * // Fully controlled (parent manages all state)
+ * const [activeId, setActiveId] = useState(null);
+ * const [expandedIds, setExpandedIds] = useState(new Set());
+ * <Sidebar activeId={activeId} expandedIds={expandedIds} />
+ *
+ * // Fully uncontrolled (Sidebar manages internally)
+ * <Sidebar defaultActiveId="home" defaultExpandAll />
+ *
+ * // Hybrid (parent controls active, Sidebar controls expansion)
+ * <Sidebar activeId={activeId} defaultExpandAll />
  */
 export interface SidebarProps<ContentType = unknown> {
   /** Sidebar data. Single root or array of roots (forest). */
@@ -195,14 +276,32 @@ export interface SidebarProps<ContentType = unknown> {
 // Internal Types
 // ===========================================================================
 
+/** Shared state passed through React Context to all descendant nodes. */
 export interface SidebarContextValue<ContentType = unknown> {
+  /** Currently active node. */
   activeId: string | null;
+
+  /** Set of expanded branch IDs. */
   expandedIds: Set<string>;
+
+  /** Indentation config. */
   indentSize: number;
+
+  /** Mutator for active state. */
   setActiveId: (id: string | null) => void;
+
+  /** Toggle expansion. */
   toggleNode: (id: string) => void;
+
+  /** Explicit expansion control */
   setNodeExpanded: (id: string, expanded: boolean) => void;
+
+  /** Custom renderer (passed through). */
   renderNode?: RenderNode<ContentType>;
+
+  /** User callback (passed through). */
   onToggle?: OnNodeToggle<ContentType>;
+
+  /** User callback (passed through). */
   onActivate?: OnNodeActivate<ContentType>;
 }
