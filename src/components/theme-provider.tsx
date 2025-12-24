@@ -1,4 +1,4 @@
-// Make this component a Client Component because it uses the local 
+// Makeس this component a Client Component because it uses the local 
 // storage to remember the user's theme preference.
 "use client";
 
@@ -8,7 +8,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // attribute="class" is CRITICAL for Tailwind dark mode to work
   return (
     <NextThemesProvider
-      attribute="data-theme"           // <--- write data-theme="dark" / "light" etc
+      attribute="data-theme"   // <--- write data-theme="dark" / "light" etc
       defaultTheme="light"
       enableSystem={true}
       storageKey="theme"

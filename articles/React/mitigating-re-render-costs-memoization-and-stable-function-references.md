@@ -1,9 +1,9 @@
 ---
-title: Memoization and Stable References in React 19
+title: "Mitigating Re-render Costs: Memoization and Stable Function References"
 created_on: 2025-12-21T18:25:44+03:30
 author: Megacodist
 ---
-# Memoization and Stable References in React 19
+# Mitigating Re-render Costs: Memoization and Stable Function References
 
 Understanding **memoization** and **stable function references** is essential for writing performant React applications. While distinct concepts, they work together—particularly through hooks like `useCallback` and `useMemo`—to prevent unnecessary work during re-renders.
 
