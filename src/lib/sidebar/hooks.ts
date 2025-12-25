@@ -1,4 +1,12 @@
-// src/components/sidebar.tsx
+/**
+ * @module lib/sidebar/hooks
+ * @description This module provides two custom React hooks for managing
+ * sidebar state:
+ * 
+ * 1. expansion state (which branches are open)
+ * 2. active state (which item is selected).
+ */
+
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
@@ -35,16 +43,30 @@ export function normalizeData<T>(
 // ===========================================================================
 
 interface UseExpandedStateOptions<T> {
+  /** Tree structure (needed for `defaultExpandAll`) */
   data: SidebarNode<T>[];
+
+  /** External control (if provided, internal state ignored) */
   controlledIds?: Set<string>;
+
+  /** Initial internal state */
   defaultIds?: Set<string>;
+
+  /** Expand all branches initially */
   defaultExpandAll?: boolean;
 }
 
 interface UseExpandedStateReturn {
+  /** Current set (either controlled or internal) */
   expandedIds: Set<string>;
+
+  /** Predicate function for checking single ID */
   isExpanded: (id: string) => boolean;
+
+  /** Flip expansion state */
   toggle: (id: string) => void;
+
+  /** Explicit set expansion state */
   setExpanded: (id: string, expanded: boolean) => void;
 }
 
@@ -55,12 +77,19 @@ export function useExpandedState<T>({
   defaultExpandAll = false,
 }: UseExpandedStateOptions<T>): UseExpandedStateReturn {
   // Compute initial state
-  const initialIds = useMemo(() => {
-    if (defaultExpandAll) {
-      return collectBranchIds(data);
-    }
-    return defaultIds ?? new Set<string>();
-  }, []); // Only compute once on mount
+  const initialIds = useMemo(
+    () => {
+      // Priority:
+      // 1. defaultExpandAll=true → collect all branch IDs
+      // 2. defaultIds provided → use those
+      // 3. Neither → empty Set
+      if (defaultExpandAll) {
+        return collectBranchIds(data);
+      }
+      return defaultIds ?? new Set<string>();
+    },
+    [data, defaultIds, defaultExpandAll]
+  ); // Only compute once on mount
 
   const [internalIds, setInternalIds] = useState<Set<string>>(initialIds);
 
