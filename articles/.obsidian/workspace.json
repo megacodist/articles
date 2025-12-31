@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "React/from-prop-soup-to-composition-mastering-compound-components.md",
+                "file": "React/Untitled.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "from-prop-soup-to-composition-mastering-compound-components"
+              "title": "Untitled"
             },
             "group": "0b197ed1ef77d1e0"
           }
@@ -34,12 +34,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "React/from-prop-soup-to-composition-mastering-compound-components.md",
+                "file": "React/Untitled.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "from-prop-soup-to-composition-mastering-compound-components"
+              "title": "Untitled"
             },
             "group": "0b197ed1ef77d1e0"
           }
@@ -102,13 +102,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "React/from-prop-soup-to-composition-mastering-compound-components.md",
+                "file": "React/Untitled.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of from-prop-soup-to-composition-mastering-compound-components"
+              "title": "Outline of Untitled"
             }
           },
           {
@@ -173,8 +173,7 @@
               "title": "Backlinks for memoization-and-stable-references-in-react-19"
             }
           }
-        ],
-        "currentTab": 3
+        ]
       }
     ],
     "direction": "horizontal",
@@ -199,10 +198,10 @@
       "bases:Create new base": false
     }
   },
-  "active": "81224e5abc7ca2e1",
+  "active": "91a6c4e3f5d50353",
   "lastOpenFiles": [
-    "React/mitigating-prop-drilling-understanding-react-context-api.md",
     "React/from-prop-soup-to-composition-mastering-compound-components.md",
+    "React/mitigating-prop-drilling-understanding-react-context-api.md",
     "git/merging-feature-branch-using-the-linear-squash-workflow.md",
     "React/memoization-and-stable-references-in-react-19.md"
   ]

@@ -41,7 +41,7 @@ export default async function LicensePage() {
             // 3. Override the Image to make it inline and icon-sized
             img: ({ node, ...props }) => {
               // If it is an SVG, use CSS Mask to make it take the background color
-              if (props.src?.endsWith(".svg")) {
+              if (typeof props.src === "string" && props.src.endsWith(".svg")) {
                 return (
                   <span
                     className="inline-block h-6 w-6 align-middle mx-1 bg-current"
