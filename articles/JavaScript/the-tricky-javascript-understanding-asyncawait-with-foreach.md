@@ -1,6 +1,10 @@
 ---
 title: "The Tricky JavaScript: Understanding Async/Await with forEach"
-author: Megacodist
+slug: "the-tricky-javascript-understanding-asyncawait-with-foreach"
+authors: ["Megacodist"]
+created_on: 2025-12-25T20:23:31+03:30
+status: "published"
+tags: []
 ---
 
 # The Tricky JavaScript: Understanding Async/Await with `forEach`

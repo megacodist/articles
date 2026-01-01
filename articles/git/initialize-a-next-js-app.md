@@ -1,7 +1,10 @@
 ---
-title: Initialize a Next.js App
+title: "Initialize a Next.js App"
+slug: "initialize-a-next-js-app"
 created_on: 2025-11-27T20:16:52+03:30
-author: Megacodist
+authors: ["Megacodist"]
+status: "published"
+tags: []
 ---
 
 # Initialize a Next.js App

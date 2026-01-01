@@ -1,7 +1,10 @@
 ---
 title: "Mitigating Re-render Costs: Memoization and Stable Function References"
+slug: "mitigating-re-render-costs-memoization-and-stable-function-references"
 created_on: 2025-12-21T18:25:44+03:30
-author: Megacodist
+authors: ["Megacodist"]
+status: "published"
+tags: []
 ---
 # Mitigating Re-render Costs: Memoization and Stable Function References
 

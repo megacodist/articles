@@ -1,7 +1,10 @@
 ---
-title: Clean Up Git History by Merging Commits with the Same Message
+title: "Clean Up Git History by Merging Commits with the Same Message"
+slug: "clean-up-git-history-by-merging-commits-with-the-same-message"
 created_on: 2025-11-20T11:22:20+03:30
-author: Megacodist
+authors: ["Megacodist"]
+status: "published"
+tags: []
 ---
 
 # Clean Up Git History by Merging Commits with the Same Message

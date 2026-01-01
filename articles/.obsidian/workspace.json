@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "React/Untitled.md",
+                "file": "React/mitigating-re-render-costs-memoization-and-stable-function-references.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Untitled"
+              "title": "mitigating-re-render-costs-memoization-and-stable-function-references"
             },
             "group": "0b197ed1ef77d1e0"
           }
@@ -34,12 +34,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "React/Untitled.md",
+                "file": "React/mitigating-re-render-costs-memoization-and-stable-function-references.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "Untitled"
+              "title": "mitigating-re-render-costs-memoization-and-stable-function-references"
             },
             "group": "0b197ed1ef77d1e0"
           }
@@ -200,8 +200,16 @@
   },
   "active": "91a6c4e3f5d50353",
   "lastOpenFiles": [
-    "React/from-prop-soup-to-composition-mastering-compound-components.md",
     "React/mitigating-prop-drilling-understanding-react-context-api.md",
+    "React/from-prop-soup-to-composition-mastering-compound-components.md",
+    "JavaScript/the-tricky-javascript-understanding-asyncawait-with-foreach.md",
+    "Git/merging-feature-branch-using-the-linear-squash-workflow.md",
+    "Git/initialize-a-next-js-app.md",
+    "Git/how-to-reset-your-local-git-project-without-losing-history.md",
+    "Git/how-to-push-an-existing-local-repository-to-github.md",
+    "Git/clean-up-git-history-by-merging-commits-with-the-same-message.md",
+    "React/Untitled.md",
+    "React/mitigating-re-render-costs-memoization-and-stable-function-references.md",
     "git/merging-feature-branch-using-the-linear-squash-workflow.md",
     "React/memoization-and-stable-references-in-react-19.md"
   ]

@@ -1,7 +1,10 @@
 ---
 title: "Mitigating Prop Drilling: Understanding React Context API"
+slug: "mitigating-prop-drilling-understanding-react-context-api"
 created_on: 2025-12-21T20:23:20+03:30
-author: Megacodist
+authors: ["Megacodist"]
+status: "published"
+tags: []
 ---
 # Mitigating Prop Drilling: Understanding React Context API
 

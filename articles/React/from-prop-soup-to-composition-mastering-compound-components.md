@@ -1,7 +1,10 @@
 ---
 title: "From Prop Soup to Composition: Mastering Compound Components"
+slug: "from-prop-soup-to-composition-mastering-compound-components"
 created_on: 2025-12-24T20:23:31+03:30
-author: Megacodist
+authors: ["Megacodist"]
+status: "published"
+tags: []
 ---
 # From Prop Soup to Composition: Mastering Compound Components
 

@@ -1,7 +1,10 @@
 ---
-title: Merging Feature Branch Using The Linear Squash Workflow
+title: "Merging Feature Branch Using The Linear Squash Workflow"
+slug: "merging-feature-branch-using-the-linear-squash-workflow"
 created_on: 2025-12-10T13:39:04+03:30
-author: Megacodist
+authors: ["Megacodist"]
+status: "published"
+tags: []
 ---
 
 # Merging Feature Branch Using The Linear Squash Workflow
