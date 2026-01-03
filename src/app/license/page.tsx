@@ -11,18 +11,12 @@ export const metadata = {
 
 export default async function LicensePage() {
   const filePath = path.join(process.cwd(), "LICENSE");
-  
-  let mkContent = "";
-  let frontmatterData = {}; // If you want to use the metadata later
+  let mkContent: string;
 
   try {
     const fileRaw = await fs.promises.readFile(filePath, "utf8");
-    
-    // --- PARSE FRONTMATTER ---
-    const parsed = matter(fileRaw);
-    mkContent = parsed.content; // This is the Clean Markdown (no --- headers)
-    frontmatterData = parsed.data;    // This is the metadata object { title: "...", date: "..." }
-    
+    // Read MD content, ignore front matter
+    ({ content: mkContent } = matter(fileRaw));
   } catch (error) {
     return notFound();
   }

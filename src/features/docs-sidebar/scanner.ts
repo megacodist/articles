@@ -2,40 +2,24 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { m3Config } from '../../../m3.config';
-import type { ArticleFrontMatter } from '@/types/article-metadata';
+import type { ArticleFrontMatter } from '@/types/artcle-metadata';
+import { slugify } from '../../utils/slugify';
 
 // ===========================================================================
 // Types & Interfaces
 // ===========================================================================
+
+/** The brand-new branch node with injected meaning of article front matter. */
+type BranchNode = SidebarBranchNode<ArticleFrontMatter>;
+
+/** The brand-new leaf node with injected meaning of article front matter. */
+type LeafNode = SidebarLeafNode<ArticleFrontMatter>;
 
 /**
  * Type definition for the Sidebar Node.
  * Used by the UI components to render the tree.
  */
 export type SidebarNode = BranchNode | LeafNode;
-
-interface BaseNode {
-  /** Unique identifier (Folder name or Article Slug). */
-  id: string;
-  /** Display label. */
-  name: string;
-}
-
-/** 
- * A Container Node (Folder). 
- */
-export interface BranchNode extends BaseNode {
-  type: 'branch';
-  children: SidebarNode[];
-}
-
-/** 
- * A Content Node (File/Article). 
- */
-export interface LeafNode extends BaseNode {
-  type: 'leaf';
-  content: ArticleFrontMatter;
-}
 
 /**
  * Structured warning object for a specific file.
@@ -51,7 +35,7 @@ interface ArticleWarning {
   slugMismatch: string | null;
 
   /**
-   * If the article parsed as a Markdown successfully, this will be null.
+   * If the article parsed as a Markdown successfully, this will be `null`.
    * Otherwise, it will contain the error message.
    */
   badMarkdown: string | null;
@@ -74,20 +58,6 @@ const stats = {
 // ===========================================================================
 // Core Logic
 // ===========================================================================
-
-/**
- * Creates a URL-friendly slug from a string.
- * @param text The string to slugify.
- */
-function slugify(text: string): string {
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(/[^\w-]+/g, '') // Remove all non-word chars
-    .replace(/--+/g, '-'); // Replace multiple - with single -
-}
 
 /**
  * Recursively scans a directory to build the Sidebar tree.
