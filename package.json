@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "scan": "tsx src/features/docs-sidebar/scanner.ts",
+    "dev": "pnpm scan && next dev",
+    "build": "pnpm scan && next build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -28,6 +29,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.4",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

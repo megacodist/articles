@@ -44,7 +44,7 @@ These tutorials are different. They are built on three principles:
 
 3.  **No Fluff:** We get straight to the point. Minimal introductions, maximum information density.
 
-## Heading Convention
+## Heading Conventions
 
 To keep all articles portable, consistent, and free of technical debt, follow these rules when writing Markdown content:
 
@@ -54,7 +54,7 @@ To keep all articles portable, consistent, and free of technical debt, follow th
 
 2. **Front matter `title:` is metadata, not the displayed title.**
 
-	Include a `title:` field in the front matter for SEO, listings, and system use. The H1 in the content should normally match this value.
+	Include a `title:` field in the front matter for SEO, listings, and system use. The H1 in the content must match this value.
 
 3. **Start all major sections with H2 (##).**
 
@@ -70,13 +70,64 @@ To keep all articles portable, consistent, and free of technical debt, follow th
 
 	If a layout or theme automatically inserts a page title, disable that behavior to prevent multiple H1s.
 
-7. **Better to keep URLs stable.**
+7. **Keep URLs stable.**
 
-	When URL stability matters, it is recommended to define a `slug:` in the front matter rather than relying on auto-generated slugs from headings.
+	To ensure stable and predictable URLs, every article **must** define a `slug` in the front matter. This decouples the URL from the main heading, preventing broken links if the title changes.
 
 8. **Use CI or linting to enforce consistency.**
 
 	A linter (e.g., markdownlint with rule MD041) or a simple script should check that each file has exactly one H1 and that front matter and H1 titles remain consistent.
+
+## 📝 Article Metadata (Front Matter)
+
+Every article must begin with a YAML Front Matter block. The build system enforces strict validation on these fields.
+
+### Quick Start Template
+Copy this block to the top of any new `.md` or `.mdx` file:
+
+```yaml
+---
+slug: mitigating-prop-drilling
+title: "Mitigating Prop Drilling: A Composition Strategy"
+authors: ["John Doe"]
+created_on: "2025-01-27T14:30:00+00:00"
+status: "draft"
+tags: ["react", "architecture", "patterns"]
+weight: 1
+---
+```
+
+### Field Reference
+
+| Field | Type | Required | Description |
+| :--- | :--- | :---: | :--- |
+| **`slug`** | `string` | ✅ | **The URL path segment.** <br>Must be URL-safe (kebab-case). <br> Highly recommended to match the filename (excluding extension). |
+| **`title`** | `string` | ✅ | The title of the article. <br> ⚠️ **Must match the only H1 heading just after the front matter.** |
+| **`authors`** | `string[]` | ✅ | List of author names. Must be an array, even for a single author. |
+| **`created_on`** | `string` | ✅ | ISO 8601 Date string (e.g., `2025-12-31T10:00:00Z`). Used for sorting. |
+| **`status`** | `enum` | ✅ | Controls build visibility. See [Status Lifecycle](#status-lifecycle) below. |
+| `tags` | `string[]` | ❌ | Taxonomy for grouping content (e.g., `["nextjs", "tutorial"]`). |
+| `weight` | `number` | ❌ | **Manual Sorting Override.** <br>Articles with a weight appear *before* unweighted articles.<br>Lower number = Higher priority (e.g., `1` is top). |
+
+### Status Lifecycle
+
+The `status` field controls how the build engine treats your file:
+
+*   **`wip`** (Work In Progress):
+    *   **Behavior:** Completely ignored by the scanner.
+    *   **Use Case:** Local notes or bare outlines not ready for code review.
+*   **`draft`** (Preview):
+    *   **Behavior:** Included in the build data but should be hidden from production lists in the UI.
+    *   **Use Case:** content ready for review/staging but not public release.
+*   **`published`** (Live):
+    *   **Behavior:** Fully visible and accessible.
+
+### ⚠️ Validation Rules
+
+The `scanner` script runs automatically before every build. It will warn you (and potentially fail CI) if:
+
+1.  **Slug Mismatch:** If your file is named `cool-hooks.md` but your slug is `react-hooks`, the scanner will flag this. **Best Practice:** Rename the file to match the slug.
+2.  **Missing Fields:** If any required field (marked ✅) is omitted.
 
 ## Contributing
 

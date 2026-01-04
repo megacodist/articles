@@ -5,19 +5,7 @@
  */
 export const m3Config = {
   /** Configurations for articles in the sidebar. */
-  articles: {
-    /** 
-     * The file system path where articles are stored. 
-     * Relative to project root.
-     */
-    dir: 'articles',
-
-    /** 
-     * The output destination for the generated JSON data.
-     * Relative to project root.
-     */
-    output: 'src/features/docs-sidebar/data.json',
-
+  sidebar: {
     /**
      * Folder Sorting Strategy.
      * Define the explicit order of branch nodes. 
@@ -35,15 +23,36 @@ export const m3Config = {
 
     /** Ignore empty branches in the sidebar. */
     ignoreEmptyBranches: true,
+  },
+
+  /** Articles configurations. */
+  articles: {
+    /** 
+     * The file system path where articles are stored. 
+     * Relative to project root.
+     */
+    dir: 'articles',
+
+    /** 
+     * The output destination for the generated JSON data.
+     * Relative to project root.
+     */
+    output: 'src/features/docs-sidebar/data.json',
+  
+    /** Required front matter fields for articles. */
+    requiredMetadata: [
+      'slug', 'title', 'authors', 'created_on', 'status'
+    ],
 
     /**
-     * Validation Flags.
+     * Configs for articles scanning.
      */
-    validation: {
-      /** Report if the filename does not match the frontmatter slug. */
-      checkSlugNameMismatch: true,
-      /** Report if required frontmatter fields are missing. */
-      checkMissingRequiredFields: true,
+    scan: {
+      /** Reports if the filename does not match the frontmatter slug. */
+      reportSlugNameMismatch: true,
+      
+      /** Reports if required frontmatter fields are missing. */
+      reportMissingMetadata: true,
     }
   }
 };

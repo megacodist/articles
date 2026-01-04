@@ -2,7 +2,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { m3Config } from '../../../m3.config';
-import type { ArticleFrontMatter } from '@/types/artcle-metadata';
+import type { ArticleFrontMatter } from '@/types/article-metadata';
+import {
+  type BranchNode as SidebarBranchNode,
+  type LeafNode as SidebarLeafNode,
+} from '@/types/m3a-sidebar';
 import { slugify } from '../../utils/slugify';
 
 // ===========================================================================
@@ -47,12 +51,51 @@ interface ArticleWarning {
  */
 const warnings: Record<string, ArticleWarning> = {};
 
+/** List of ignored items (files/directories). */
+const ignoredItems: string[] = [];
+
 /**
- * Runtime statistics.
+ * Scan statistics.
  */
 const stats = {
-  processed: 0,
-  systemSkipped: 0,
+  /** Total number of items processed */
+  nTotal: 0,
+
+  /** Number of articles found */
+  nArticles: 0,
+};
+
+/** The root directory of the project. */
+const projectRoot = process.cwd();
+
+/** Messages in this module. */
+const messages = {
+  /** Message for the start of the scan. */
+  SCANNING_ARTICLES: '🏗️  Megacodist articles: Scanning...',
+  /** The heading of the report. */
+  RPT_HEADING: '📊 Statistics',
+  /** Report item for duration and total scanned items. */
+  RPT_TOTAL_DUR: (total: number, duration: string) =>
+    `Scanned ${total} items in ${duration}ms` as const,
+  /** Report item for the number of articles found. */
+  RPT_N_ARTICLES: (count: number) => `Found ${count} articles.` as const,
+  /** Report item for the number of ignored items. */
+  RPT_N_ITEMS_SKIPPED: (count: number) =>
+    `Skipped ${count} items.` as const,
+  /** Report item for ignorence of system item. */
+  RPT_SYS_ITEM_IGNORED: (path: string) =>
+    `Ignored file system item: ${path}` as const,
+  RPT_UNKNOWN_FS_ITEM: (path: string) =>
+    `Unknown file system item: ${path}` as const,
+  RPT_BAD_ARTICLE_FRMT: (path: string) => 
+    `Unsupported article format: ${path}` as const,
+  RPT_ARTICLES_WARNINGS: 'Some articles have warnings:',
+  RPT_MISSING_REQUIRED_FIELDS: (fields: string[]) =>
+    `   └─ Missing metadata fields: ${fields.join(', ')}` as const,
+  RPT_INVALID_MARKDOWN: (error: string) =>
+    `   └─ Invalid Markdown: ${error}` as const,
+  RPT_SLUG_MISMATCH: (slug: string) =>
+    `   └─ Slug Mismatch: '${slug}' (Expected filename match)` as const,
 };
 
 // ===========================================================================
@@ -70,12 +113,13 @@ async function scanDirectory(dirPath: string): Promise<SidebarNode[]> {
   const nodes: SidebarNode[] = [];
 
   for (const entry of entries) {
+    stats.nTotal++;
     const fullPath = path.join(dirPath, entry.name);
     
     // 1. IGNORE: System files, underscores, and dots.
     if (entry.name.startsWith('.') || entry.name.startsWith('_') ||
     entry.name === 'node_modules') {
-      stats.systemSkipped++;
+      ignoredItems.push(messages.RPT_SYS_ITEM_IGNORED(fullPath));
       continue;
     }
 
@@ -84,7 +128,7 @@ async function scanDirectory(dirPath: string): Promise<SidebarNode[]> {
       const children = await scanDirectory(fullPath);
       
       // Ignore empty branches if configured
-      if (children.length > 0 || !m3Config.articles.ignoreEmptyBranches) {
+      if (children.length > 0 || !m3Config.sidebar.ignoreEmptyBranches) {
         nodes.push({
           type: 'branch',
           id: slugify(entry.name),
@@ -96,13 +140,21 @@ async function scanDirectory(dirPath: string): Promise<SidebarNode[]> {
     }
 
     // 3. PROCESS: Leaf (only Markdown File)
-    const isMarkdown = /\.(md|mdx)$/.test(entry.name);
-    if (entry.isFile() && isMarkdown) {
-      const node = await processLeaf(fullPath, entry.name);
-      if (node) {
-        nodes.push(node);
-        stats.processed++;
+    if (entry.isFile()) {
+      if (/\.(md|mdx)$/.test(entry.name)) {
+        // Process Markdown document
+        const node = await processLeaf(fullPath, entry.name);
+        if (node) {
+          nodes.push(node);
+          stats.nArticles++;
+        }
+      } else {
+        // Unsupported article found
+        ignoredItems.push(messages.RPT_BAD_ARTICLE_FRMT(fullPath));
       }
+    } else {
+      // Unknown file system item found
+      ignoredItems.push(messages.RPT_UNKNOWN_FS_ITEM(fullPath));
     }
   }
 
@@ -121,64 +173,77 @@ async function processLeaf(
   filename: string
 ): Promise<LeafNode | null> {
   /** Holds possible errors associated with this article */
-  const currentWarnings: ArticleWarning = {
+  const articleWarnings: ArticleWarning = {
     missingFields: [],
     slugMismatch: null,
     badMarkdown: null,
   };
   /** Specifies whether any error found. */
-  let hasError = false;
-  const relativePath = path.relative(path.join(process.cwd(), m3Config.articles.dir), fullPath);
+  let errorFound = false;
+  /** Relative path of this article from articles directory. */
+  const relativePath = path.relative(
+    path.join(projectRoot, m3Config.articles.dir),
+    fullPath
+  );
 
-  // Read the front matter
-  let frontMatter: Partial<ArticleFrontMatter> = {};
+  // Read the front matter ------------------------
+  /** Unformatted (raw) front matter of the article. */
+  let rawFM: object;
   try {
     const fileContent = await fs.readFile(fullPath, 'utf-8');
-    const { data } = matter(fileContent);
+    ({ data: rawFM } = matter(fileContent));
   } catch (e: any) {
-    currentWarnings.badMarkdown = e.message;
-    warnings[relativePath] = currentWarnings;
+    articleWarnings.badMarkdown = e.message;
+    warnings[relativePath] = articleWarnings;
     return null;
   }
   const filenameNoExt = filename.replace(/\.(md|mdx)$/, '');
 
-  // Check Required Fields
-  frontMatter = data as Partial<ArticleFrontMatter>;
-  if (m3Config.articles.validation.checkMissingRequiredFields) {
-    const required: (keyof ArticleFrontMatter)[] = ['slug', 'title', 'authors', 'created_on', 'status'];
-    required.forEach(field => {
-      if (!frontMatter[field]) currentWarnings.missingFields.push(field);
-    });
+  // Check Required Fields ---------------------
+  /** Formatted (structured) front matter of the article. */
+  let fm = rawFM as Partial<ArticleFrontMatter>;
+  if (m3Config.articles.scan.reportMissingMetadata) {
+    m3Config.articles.requiredMetadata.forEach(
+      field => {
+        const value = fm[field as keyof ArticleFrontMatter];
+        if (value == null || value === "") {
+          articleWarnings.missingFields.push(field);
+          errorFound = true;
+        }
+      }
+    );
   }
 
   // Check Slug Mismatch
-  if (m3Config.articles.validation.checkSlugNameMismatch) {
-    if (frontMatter.slug && frontMatter.slug !== filenameNoExt) {
-      currentWarnings.slugMismatch = frontMatter.slug;
+  if (m3Config.articles.scan.reportSlugNameMismatch) {
+    if (fm.slug && fm.slug !== filenameNoExt) {
+      articleWarnings.slugMismatch = fm.slug;
+      errorFound = true;
     }
   }
 
   // Register Warnings if any exist
-  if (currentWarnings.missingFields.length > 0 || currentWarnings.slugMismatch !== null) {
-    warnings[relativePath] = currentWarnings;
+  if (errorFound) {
+    warnings[relativePath] = articleWarnings;
   }
 
   // Should we return the node even if it has warnings? 
-  // Strategy: Yes, unless critical fields (like slug) are missing preventing ID generation.
-  if (!frontMatter.slug || !frontMatter.title) {
+  // Strategy: Yes, unless critical fields (like slug) are missing
+  // preventing ID generation.
+  if (!fm.slug || !fm.title) {
     return null; 
   }
 
   return {
     type: 'leaf',
-    id: frontMatter.slug,
-    name: frontMatter.title,
-    content: frontMatter as ArticleFrontMatter,
+    id: fm.slug,
+    name: fm.title,
+    content: fm as ArticleFrontMatter,
   };
 }
 
 /**
- * Sorts nodes based on the strategy defined in m3.config.
+ * Sorts nodes based on the strategy defined in `m3.config`.
  * 
  * 1. Branches: Priority Config -> Alphabetical.
  * 2. Leaves: Weight (Ascending) -> Date (Descending).
@@ -189,8 +254,8 @@ function sortNodes(nodes: SidebarNode[]): SidebarNode[] {
 
   // Sort Branches
   branches.sort((a, b) => {
-    const priorityA = m3Config.articles.folderPriority[a.name] ?? 999;
-    const priorityB = m3Config.articles.folderPriority[b.name] ?? 999;
+    const priorityA = m3Config.sidebar.folderPriority[a.name] ?? Infinity;
+    const priorityB = m3Config.sidebar.folderPriority[b.name] ?? Infinity;
     
     if (priorityA !== priorityB) return priorityA - priorityB;
     return a.name.localeCompare(b.name);
@@ -218,42 +283,54 @@ function sortNodes(nodes: SidebarNode[]): SidebarNode[] {
 // ===========================================================================
 
 async function main() {
-  console.log('🏗️  M3 Content Engine: Scanning...');
-  const start = performance.now();
-
-  const sourceDir = path.join(process.cwd(), m3Config.articles.dir);
-  const outputFile = path.join(process.cwd(), m3Config.articles.output);
+  // Prompt the start of the scan
+  console.log(messages.SCANNING_ARTICLES);
+  
+  /** The starting time of scanning for articles. */
+  const tmStart = performance.now();
+  /** The absolute path of the articles folder. */
+  const articlesDir = path.join(projectRoot, m3Config.articles.dir);
+  /** The absolute path of the output JSON. */
+  const outputFile = path.join(projectRoot, m3Config.articles.output);
 
   try {
-    const rawNodes = await scanDirectory(sourceDir);
+    const rawNodes = await scanDirectory(articlesDir);
     const sortedNodes = sortNodes(rawNodes);
-
     // Write Output
     await fs.mkdir(path.dirname(outputFile), { recursive: true });
     await fs.writeFile(outputFile, JSON.stringify(sortedNodes, null, 2));
 
-    const end = performance.now();
+    /** The finish time of scanning for articles. */
+    const tmEnd = performance.now();
     
     // Summary
-    console.log(`✅ Generated sidebar in ${(end - start).toFixed(2)}ms`);
-    console.log(`📊 Stats: ${stats.processed} articles.`);
-
-    // Warning Report
-    const warningKeys = Object.keys(warnings);
-    if (warningKeys.length > 0) {
-      console.log('\n' + '─'.repeat(50));
-      console.log('⚠️  VALIDATION REPORT');
-      console.log('─'.repeat(50));
-      
-      warningKeys.forEach(file => {
+    console.log('-'.repeat(20));
+    console.log(messages.RPT_HEADING);
+    console.log(messages.RPT_TOTAL_DUR(stats.nTotal, (tmEnd - tmStart).toFixed(2)));
+    console.log(messages.RPT_N_ARTICLES(stats.nArticles));
+    // Report ignored items
+    console.log(messages.RPT_N_ITEMS_SKIPPED(ignoredItems.length));
+    ignoredItems.forEach(item => console.log(`   └─ ${item}`));
+    // Report articles warnings
+    const articles = Object.keys(warnings);
+    if (articles.length > 0) {
+      console.log(messages.RPT_ARTICLES_WARNINGS);      
+      articles.forEach((file: string, idx: number) => {
         const w = warnings[file];
-        console.log(`📄 ${file}`);
-        if (w.missingFields.length) console.log(`   └─ Missing: ${w.missingFields.join(', ')}`);
-        if (w.badMarkdown) console.log(`   └─ Invalid Markdown: ${w.badMarkdown}`);
-        if (w.slugMismatch) console.log(`   └─ Slug Mismatch: '${w.slugMismatch}' (Expected filename match)`);
+        console.log(`📄 ${idx + 1} ${file}`);
+        if (w.missingFields.length) {
+          console.log(messages.RPT_MISSING_REQUIRED_FIELDS(w.missingFields));
+        }
+        if (w.badMarkdown) {
+          console.log(messages.RPT_INVALID_MARKDOWN(w.badMarkdown));
+        }
+        if (w.slugMismatch) {
+          console.log(messages.RPT_SLUG_MISMATCH(w.slugMismatch));
+        }
       });
-      console.log('─'.repeat(50) + '\n');
     }
+    // End the report
+    console.log('─'.repeat(50) + '\n');
 
   } catch (error) {
     console.error('💥 Fatal Error:', error);

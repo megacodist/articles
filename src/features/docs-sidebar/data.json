@@ -1,0 +1,158 @@
+[
+  {
+    "type": "branch",
+    "id": "javascript",
+    "name": "JavaScript",
+    "children": [
+      {
+        "type": "leaf",
+        "id": "the-tricky-javascript-understanding-asyncawait-with-foreach",
+        "name": "The Tricky JavaScript: Understanding Async/Await with forEach",
+        "content": {
+          "title": "The Tricky JavaScript: Understanding Async/Await with forEach",
+          "slug": "the-tricky-javascript-understanding-asyncawait-with-foreach",
+          "authors": [
+            "Megacodist"
+          ],
+          "created_on": "2025-12-25T16:53:31.000Z",
+          "status": "published",
+          "tags": []
+        }
+      }
+    ]
+  },
+  {
+    "type": "branch",
+    "id": "react",
+    "name": "React",
+    "children": [
+      {
+        "type": "leaf",
+        "id": "from-prop-soup-to-composition-mastering-compound-components",
+        "name": "From Prop Soup to Composition: Mastering Compound Components",
+        "content": {
+          "title": "From Prop Soup to Composition: Mastering Compound Components",
+          "slug": "from-prop-soup-to-composition-mastering-compound-components",
+          "created_on": "2025-12-24T16:53:31.000Z",
+          "authors": [
+            "Megacodist"
+          ],
+          "status": "published",
+          "tags": []
+        }
+      },
+      {
+        "type": "leaf",
+        "id": "mitigating-prop-drilling-understanding-react-context-api",
+        "name": "Mitigating Prop Drilling: Understanding React Context API",
+        "content": {
+          "title": "Mitigating Prop Drilling: Understanding React Context API",
+          "slug": "mitigating-prop-drilling-understanding-react-context-api",
+          "created_on": "2025-12-21T16:53:20.000Z",
+          "authors": [
+            "Megacodist"
+          ],
+          "status": "published",
+          "tags": []
+        }
+      },
+      {
+        "type": "leaf",
+        "id": "mitigating-re-render-costs-memoization-and-stable-function-references",
+        "name": "Mitigating Re-render Costs: Memoization and Stable Function References",
+        "content": {
+          "title": "Mitigating Re-render Costs: Memoization and Stable Function References",
+          "slug": "mitigating-re-render-costs-memoization-and-stable-function-references",
+          "created_on": "2025-12-21T14:55:44.000Z",
+          "authors": [
+            "Megacodist"
+          ],
+          "status": "published",
+          "tags": []
+        }
+      }
+    ]
+  },
+  {
+    "type": "branch",
+    "id": "git",
+    "name": "Git",
+    "children": [
+      {
+        "type": "leaf",
+        "id": "merging-feature-branch-using-the-linear-squash-workflow",
+        "name": "Merging Feature Branch Using The Linear Squash Workflow",
+        "content": {
+          "title": "Merging Feature Branch Using The Linear Squash Workflow",
+          "slug": "merging-feature-branch-using-the-linear-squash-workflow",
+          "created_on": "2025-12-10T10:09:04.000Z",
+          "authors": [
+            "Megacodist"
+          ],
+          "status": "published",
+          "tags": []
+        }
+      },
+      {
+        "type": "leaf",
+        "id": "initialize-a-next-js-app",
+        "name": "Initialize a Next.js App",
+        "content": {
+          "title": "Initialize a Next.js App",
+          "slug": "initialize-a-next-js-app",
+          "created_on": "2025-11-27T16:46:52.000Z",
+          "authors": [
+            "Megacodist"
+          ],
+          "status": "published",
+          "tags": []
+        }
+      },
+      {
+        "type": "leaf",
+        "id": "how-to-reset-your-local-git-project-without-losing-history",
+        "name": "How to Reset Your Local Git Project Without Losing History",
+        "content": {
+          "title": "How to Reset Your Local Git Project Without Losing History",
+          "slug": "how-to-reset-your-local-git-project-without-losing-history",
+          "created_on": "2025-11-20T16:51:51.000Z",
+          "authors": [
+            "Megacodist"
+          ],
+          "status": "published",
+          "tags": []
+        }
+      },
+      {
+        "type": "leaf",
+        "id": "clean-up-git-history-by-merging-commits-with-the-same-message",
+        "name": "Clean Up Git History by Merging Commits with the Same Message",
+        "content": {
+          "title": "Clean Up Git History by Merging Commits with the Same Message",
+          "slug": "clean-up-git-history-by-merging-commits-with-the-same-message",
+          "created_on": "2025-11-20T07:52:20.000Z",
+          "authors": [
+            "Megacodist"
+          ],
+          "status": "published",
+          "tags": []
+        }
+      },
+      {
+        "type": "leaf",
+        "id": "how-to-push-an-existing-local-repository-to-github",
+        "name": "How to Push an Existing Local Repository to GitHub",
+        "content": {
+          "title": "How to Push an Existing Local Repository to GitHub",
+          "slug": "how-to-push-an-existing-local-repository-to-github",
+          "created_on": "2025-11-20T07:08:20.000Z",
+          "authors": [
+            "Megacodist"
+          ],
+          "status": "published",
+          "tags": []
+        }
+      }
+    ]
+  }
+]
