@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { ThemeProvider } from "@/components/theme-provider";
-import { DocsSidebar } from "@/features/docs-sidebar/DocsSidebar";
+import { Toc } from "@/features/toc/toc";
 
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default function RootLayout({
           */}
           <main className="m3-container flex flex-grow">
             <div className="flex-none">
-              <DocsSidebar />
+              <Toc />
             </div>
             
             {/* Content: Takes up all remaining space */}

@@ -2,28 +2,17 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { m3Config } from '../../../m3.config';
-import type { ArticleFrontMatter } from '@/types/article-metadata';
+import type { ArticleFrontMatter } from '@/types/toc';
 import {
-  type BranchNode as SidebarBranchNode,
-  type LeafNode as SidebarLeafNode,
-} from '@/types/m3a-sidebar';
+  type TocNode,
+  type TopicNode,
+  type ArticleNode
+} from '@/types/toc';
 import { slugify } from '../../utils/slugify';
 
 // ===========================================================================
 // Types & Interfaces
 // ===========================================================================
-
-/** The brand-new branch node with injected meaning of article front matter. */
-type BranchNode = SidebarBranchNode<ArticleFrontMatter>;
-
-/** The brand-new leaf node with injected meaning of article front matter. */
-type LeafNode = SidebarLeafNode<ArticleFrontMatter>;
-
-/**
- * Type definition for the Sidebar Node.
- * Used by the UI components to render the tree.
- */
-export type SidebarNode = BranchNode | LeafNode;
 
 /**
  * Structured warning object for a specific file.
@@ -108,9 +97,9 @@ const messages = {
  * @param dirPath - The absolute path to the current directory.
  * @returns A promise resolving to a sorted list of SidebarNodes.
  */
-async function scanDirectory(dirPath: string): Promise<SidebarNode[]> {
+async function scanDirectory(dirPath: string): Promise<TocNode[]> {
   const entries = await fs.readdir(dirPath, { withFileTypes: true });
-  const nodes: SidebarNode[] = [];
+  const nodes: TocNode[] = [];
 
   for (const entry of entries) {
     stats.nTotal++;
@@ -134,7 +123,7 @@ async function scanDirectory(dirPath: string): Promise<SidebarNode[]> {
           id: slugify(entry.name),
           name: entry.name, // In future, could read a _meta.json for display name
           children: sortNodes(children),
-        } as BranchNode);
+        } as TopicNode);
       }
       continue;
     }
@@ -162,7 +151,7 @@ async function scanDirectory(dirPath: string): Promise<SidebarNode[]> {
 }
 
 /**
- * Parses a single Markdown file, validates it, and returns a LeafNode.
+ * Parses a single Markdown file, validates it, and returns a ArticleNode.
  * Populates the `warnings` object if issues are found.
  * 
  * @param fullPath - Absolute path to the file.
@@ -171,7 +160,7 @@ async function scanDirectory(dirPath: string): Promise<SidebarNode[]> {
 async function processLeaf(
   fullPath: string,
   filename: string
-): Promise<LeafNode | null> {
+): Promise<ArticleNode | null> {
   /** Holds possible errors associated with this article */
   const articleWarnings: ArticleWarning = {
     missingFields: [],
@@ -248,9 +237,9 @@ async function processLeaf(
  * 1. Branches: Priority Config -> Alphabetical.
  * 2. Leaves: Weight (Ascending) -> Date (Descending).
  */
-function sortNodes(nodes: SidebarNode[]): SidebarNode[] {
-  const branches = nodes.filter((n): n is BranchNode => n.type === 'branch');
-  const leaves = nodes.filter((n): n is LeafNode => n.type === 'leaf');
+function sortNodes(nodes: TocNode[]): TocNode[] {
+  const branches = nodes.filter((n): n is TopicNode => n.type === 'branch');
+  const leaves = nodes.filter((n): n is ArticleNode => n.type === 'leaf');
 
   // Sort Branches
   branches.sort((a, b) => {

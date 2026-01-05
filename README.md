@@ -78,7 +78,7 @@ To keep all articles portable, consistent, and free of technical debt, follow th
 
 	A linter (e.g., markdownlint with rule MD041) or a simple script should check that each file has exactly one H1 and that front matter and H1 titles remain consistent.
 
-## 📝 Article Metadata (Front Matter)
+## 📝 Articles Metadata (Front Matter)
 
 Every article must begin with a YAML Front Matter block. The build system enforces strict validation on these fields.
 
@@ -128,6 +128,26 @@ The `scanner` script runs automatically before every build. It will warn you (an
 
 1.  **Slug Mismatch:** If your file is named `cool-hooks.md` but your slug is `react-hooks`, the scanner will flag this. **Best Practice:** Rename the file to match the slug.
 2.  **Missing Fields:** If any required field (marked ✅) is omitted.
+
+## Commands
+
+### TOC scanner
+
+```bash
+pnpm scan
+```
+
+### Dev server
+
+```bash
+pnpm dev
+```
+
+### Build
+
+```bash
+pnpm build
+```
 
 ## Contributing
 

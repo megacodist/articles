@@ -1,6 +1,7 @@
 // src/features/docs-sidebar/CustomRenderer.tsx
 
 import Link from "next/link";
+import { type ArticleFrontMatter } from '@/types/toc';
 import type { NodeRenderContext } from "@/lib/sidebar";
 
 /**
@@ -13,8 +14,8 @@ export function DocsNodeRenderer({
   hasChildren,
   toggle,
   activate,
-}: NodeRenderContext<string>): React.ReactNode {
-  const href = node.content;
+}: NodeRenderContext<ArticleFrontMatter>): React.ReactNode {
+  const href = node.content?.slug;
   const isDisabled = node.disabled ?? false;
 
   // Use daisyUI menu classes

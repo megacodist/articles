@@ -6,23 +6,28 @@
 import { usePathname } from "next/navigation";
 import { useMemo, useCallback } from "react";
 
-import { Sidebar, type SidebarNode, type OnNodeActivate } from "@/lib/sidebar";
-import { docsNavigation } from "./data";
+import { type TocNode, type ArticleFrontMatter } from '@/types/toc';
+import { Sidebar, type OnNodeActivate } from "@/lib/sidebar";
+import json from "./data.json";
 import { DocsNodeRenderer } from "./CustomRenderer";
 
+
+/** The hierarchy to be shown in the TOC. */
+const data = json as TocNode[];
+
 /**
- * Finds the node ID matching the path of the current URL.
+ * Recursively finds the node ID matching the path of the current URL.
  * 
  * @param nodes Array of nodes to search through.
  * @param pathname The current path to match against.
- * @returns The ID of the matching node, or null if no match is found.
+ * @returns The ID of the matching node, or `null` if no match is found.
  */
 function findActiveNode(
-  nodes: SidebarNode<string>[],
+  nodes: TocNode[],
   pathname: string
 ): string | null {
   for (const node of nodes) {
-    if (node.content === pathname) {
+    if (node.content?.slug === pathname) {
       return node.id;
     }
     if (node.type === "branch" && node.children.length > 0) {
@@ -42,7 +47,7 @@ function findActiveNode(
  * @returns	Array of parent IDs, or `null` if target not found
  */
 function findParentIds(
-  nodes: SidebarNode<string>[],
+  nodes: TocNode[],
   targetId: string,
   parents: string[] = []
 ): string[] | null {
@@ -62,13 +67,13 @@ function findParentIds(
   return null;
 }
 
-export function DocsSidebar() {
+export function Toc() {
   /** The path part of the current URL */
   const pathname = usePathname();
 
   /** The node ID of the path of the current URL */
   const activeId = useMemo(
-    () => findActiveNode(docsNavigation, pathname),
+    () => findActiveNode(data, pathname),
     [pathname]
   );
 
@@ -79,14 +84,14 @@ export function DocsSidebar() {
   const defaultExpandedIds = useMemo(
     () => {
       if (!activeId) return new Set<string>();
-      const parentIds = findParentIds(docsNavigation, activeId);
+      const parentIds = findParentIds(data, activeId);
       return new Set(parentIds ?? []);
     },
     [activeId]
   );
 
   /** The stable function reference for the activation handler */
-  const onNodeActivation: OnNodeActivate<string> = useCallback(
+  const onNodeActivation: OnNodeActivate<ArticleFrontMatter> = useCallback(
     (node) => {
       console.log("Activated:", node.name);
     },
@@ -105,14 +110,14 @@ export function DocsSidebar() {
 
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto p-2">
-        <Sidebar<string>
-          data={docsNavigation}
+        <Sidebar<ArticleFrontMatter>
+          data={data}
           activeId={activeId}
           defaultExpandedIds={defaultExpandedIds}
           onActivate={onNodeActivation}
           renderNode={DocsNodeRenderer}
           indentSize={20}
-          aria-label="Documentation navigation"
+          aria-label="Table of content and navigation"
         />
       </div>
 
